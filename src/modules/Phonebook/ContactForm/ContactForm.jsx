@@ -1,15 +1,28 @@
-import PropTypes from 'prop-types';
 import { Formik, Form, Field } from 'formik';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact } from '../../../redux/contacts/contacts-slice';
+import { getAllContacts } from '../../../redux/contacts/contacts-selectors';
 import css from './ContactForm.module.css';
 
-const ContactForm = ({ addContact }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const allContacts = useSelector(getAllContacts);
   const initialValues = {
     name: '',
     number: '',
   };
 
-  const handleSubmit = (values, { resetForm }) => {
-    addContact(values);
+  const handleSubmit = (contact, { resetForm }) => {
+    const checkName = allContacts.find(
+      item => item.name.toLowerCase() === contact.name.toLowerCase()
+    );
+
+    if (checkName) {
+      alert(`${contact.name} has already added in contacts`);
+      return;
+    }
+
+    dispatch(addContact(contact));
     resetForm();
   };
 
@@ -48,7 +61,3 @@ const ContactForm = ({ addContact }) => {
 };
 
 export default ContactForm;
-
-ContactForm.propTypes = {
-  addContact: PropTypes.func.isRequired,
-};

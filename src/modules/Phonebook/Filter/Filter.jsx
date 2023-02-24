@@ -1,17 +1,21 @@
-import PropTypes from 'prop-types';
 import { Formik, Form, Field } from 'formik';
+import { useSelector, useDispatch } from 'react-redux';
+import { setFilter } from '../../../redux/filter/filter-slice';
+import { getFilter } from '../../../redux/filter/filter-selectors';
 import css from './Filter.module.css';
 
-const Filter = ({ value, onChange }) => {
+const Filter = () => {
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
   const initialValues = {
-    filter: '',
+    filter: filter,
   };
   const handleChange = e => {
-    onChange(e.currentTarget.value);
+    dispatch(setFilter(e.currentTarget.value));
   };
 
   const handleSubmit = ({ filter }, { resetForm }) => {
-    onChange(filter);
+    dispatch(setFilter(filter));
     resetForm();
   };
 
@@ -25,7 +29,7 @@ const Filter = ({ value, onChange }) => {
             className={css.input}
             type="text"
             name="filter"
-            value={value}
+            value={filter}
             onChange={handleChange}
           ></Field>
         </Form>
@@ -35,8 +39,3 @@ const Filter = ({ value, onChange }) => {
 };
 
 export default Filter;
-
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
